@@ -39,18 +39,20 @@ def videoProcessing():
     height=720/2#(resized)
     goodDistance=200
     cWidth=int(width/2)
-    cHeight=int((height-100)/2)
-
+    cHeight=int((height-50)/2)
+    lastvDistance=[0,0,0]
+    dropTime = time.time()
     while True:
         ret, img = cap.read()
         small_frame = cv2.resize(img, (0, 0), fx=0.5, fy=0.5)
         gray = cv2.cvtColor(small_frame,cv2.COLOR_BGR2GRAY)
         faces=face_cascade.detectMultiScale(gray,1.3,5)
-    
+
+        vDistance=[0,0,0]
 
         boxCenterX=0
         boxCenterY=0
-        vDistance=[0,0,0]
+       
 
         for(x, y, w, h) in faces:
     
@@ -67,6 +69,12 @@ def videoProcessing():
 
         text="[" +str(boxCenterX)+", "+str(boxCenterY)+"]"
 
+        if(isArrayFullOfZero(vDistance) and (time.time()<dropTime)):
+            vDistance = lastvDistance
+        else:
+            lastvDistance=vDistance
+            dropTime=time.time()+1
+
         if(control):
             controller(vDistance)
 
@@ -78,6 +86,11 @@ def videoProcessing():
     cap.release()
     cv2.destroyAllWindows()
 
+def isArrayFullOfZero(array):
+    for a in array:
+        if(a!=0):
+            return False;
+    return True
 
 def limiter(vaule):
     if((vaule<10) and (vaule>-10)):
