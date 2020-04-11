@@ -117,9 +117,8 @@ while True:
         send("land")
     elif(be=="start"):
         send("takeoff")
-        time.sleep(4)
-        send("up 30")
-        time.sleep(2)
+        time.sleep(6)
+        send("up 60")
         control=True
     elif(be=="on"):
         control=True
