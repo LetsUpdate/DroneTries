@@ -13,6 +13,13 @@ PC_IP="192.168.10.2"
 control=False
 face_cascade=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
+SPEED_LIMIT=35
+SPEED_TRESHOLD=10
+TURN_LIMIT=100
+TURN_TRESHOLD=10
+FLOAT_LIMIT=60
+FLOAT_TRESHOLD=10
+
 messageSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 messageSock.bind((PC_IP,MESSAGE_PORT))
 
@@ -92,26 +99,19 @@ def isArrayFullOfZero(array):
             return False;
     return True
 
-def limiter(vaule):
-    if((vaule<10) and (vaule>-10)):
+def limiter(vaule, limit,treshold):
+    if((vaule<treshold) and (vaule>-treshold)):
         return 0
 
-    if(vaule>60):
-        return 60
-    if(vaule<-60):
-        return -60
-    return vaule
-
-def speedLimiter(vaule):
-    if(vaule>40):
-        return 40
-    if(vaule<-40):
-        return -40
+    if(vaule>limit):
+        return limit
+    if(vaule<-limit):
+        return -limit
     return vaule
 
 def controller(vektor):
     
-    send("rc 0 "+str(speedLimiter(vektor[2]/2))+' '+str(limiter(vektor[1]/2))+' '+str(limiter(-vektor[0]/2)))
+    send("rc 0 "+str(limiter(vektor[2]/2,SPEED_LIMIT,SPEED_TRESHOLD))+' '+str(limiter(vektor[1]/2,FLOAT_LIMIT,FLOAT_TRESHOLD))+' '+str(limiter(-vektor[0]/2,TURN_LIMIT,TURN_TRESHOLD)))
 
 send("command")
 send("streamon")
