@@ -32,7 +32,7 @@ recvThread = threading.Thread(target=reciveMessages)
 recvThread.start()
 
 def videoProcessing():
-    time.sleep(2)
+    time.sleep(5)
     cap = cv2.VideoCapture('udp://@' + DRONE_IP + ':' + str(VIDEO_PORT))
 
     width=960/2 #(resized)
@@ -103,10 +103,10 @@ def limiter(vaule):
     return vaule
 
 def speedLimiter(vaule):
-    if(vaule>30):
-        return 30
-    if(vaule<-30):
-        return -30
+    if(vaule>40):
+        return 40
+    if(vaule<-40):
+        return -40
     return vaule
 
 def controller(vektor):
@@ -116,6 +116,7 @@ def controller(vektor):
 send("command")
 send("streamon")
 send("battery?")
+
 
 videoThread = threading.Thread(target=videoProcessing)
 videoThread.start()
